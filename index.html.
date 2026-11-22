@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculadora</title>
+<style>
+*{box-sizing:border-box;font-family:system-ui,sans-serif}
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:linear-gradient(135deg,#1e1b4b,#4338ca)}
+.calc{width:320px;padding:20px;border-radius:24px;background:#111827;box-shadow:0 20px 50px rgba(0,0,0,.5)}
+#tela{background:#1f2937;color:#fff;font-size:2.2rem;text-align:right;padding:20px 14px;border-radius:14px;margin-bottom:16px;min-height:80px;word-break:break-all}
+.teclas{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+button{border:0;border-radius:14px;padding:18px 0;font-size:1.3rem;background:#374151;color:#fff;cursor:pointer}
+button:active{transform:scale(.95)}
+.op{background:#6366f1}.igual{background:#10b981}.limpar{background:#ef4444}
+</style>
+</head>
+<body>
+<div class="calc">
+<div id="tela">0</div>
+<div class="teclas">
+<button class="limpar" data-v="C">C</button>
+<button class="op" data-v="(">(</button>
+<button class="op" data-v=")">)</button>
+<button class="op" data-v="÷">÷</button>
+<button data-v="7">7</button><button data-v="8">8</button><button data-v="9">9</button>
+<button class="op" data-v="×">×</button>
+<button data-v="4">4</button><button data-v="5">5</button><button data-v="6">6</button>
+<button class="op" data-v="−">−</button>
+<button data-v="1">1</button><button data-v="2">2</button><button data-v="3">3</button>
+<button class="op" data-v="+">+</button>
+<button data-v="0">0</button><button data-v=".">.</button>
+<button data-v="<">⌫</button>
+<button class="igual" data-v="=">=</button>
+</div>
+</div>
+<script>
+const tela=document.getElementById('tela');
+let expr='';
+document.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+  const v=b.dataset.v;
+  if(expr==='Erro')expr='';
+  if(v==='C')expr='';
+  else if(v==='<')expr=expr.slice(0,-1);
+  else if(v==='='){
+    if(!expr)return;
+    const conta=expr.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-');
+    try{
+      if(!/^[0-9+\-*/.() ]+$/.test(conta))throw 0;
+      const r=Function('return '+conta)();
+      expr=isFinite(r)?String(Math.round(r*1e10)/1e10):'Erro';
+    }catch{expr='Erro';}
+  }
+  else expr+=v;
+  tela.textContent=expr||'0';
+});
+</script>
+</body>
+</html>
